@@ -1,23 +1,28 @@
 import json
 import hashlib
+import maskpass
 
 print("""
 *** Sign In System ***
+- press left-Ctrl key to show password
 - press F_P to change your password
 """)
 
+# password-12345678
+
 userName_chance = 1
 userPassword_chance = 1
+Code = 1010101010
 
 with open("p.txt", 'r') as f:
     data = json.load(f)
 f.close()
 
 while userName_chance <= 3 and userPassword_chance <= 3:
-    u_name = str(input("Username: "))
+    u_name = str(input("Enter Username: "))
 
     if u_name == data["username"]:
-        u_pass = input("Password: ")
+        u_pass = maskpass.advpass(prompt="Enter Password: ", mask="*")
         u_pass_hashed = hashlib.sha256(u_pass.encode('utf-8')).hexdigest()
         if u_pass_hashed == data["password"]:
             print(f"Welcome {u_name}")
@@ -49,7 +54,7 @@ def changeUserName():
 
 
 def changePassword():
-    new_password = input("Set new password: ")
+    new_password = maskpass.advpass(prompt="Set New Password: ", mask="#")
     if len(new_password) < 8:
         print("must be of atleast (8-digits) for more security")
         changePassword()
@@ -68,8 +73,8 @@ def changePassword():
 def checkCode():
     try:
         code = int(input("Code(10-digit): "))
-        if code == 1010101010:
-            print("** Use strong password that you don't use for other things ***")
+        if code == Code:
+            print("*** Use strong password that you don't use for other things ***")
             changePassword()
         else:
             print("Not matched")
